@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies/themes/app_theme.dart';
+import 'package:movies/widgets/widgets.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({Key? key}) : super(key: key);
@@ -10,14 +11,27 @@ class DetailsScreen extends StatelessWidget {
         ModalRoute.of(context)?.settings.arguments.toString() ?? "No movie";
     return Scaffold(
         body: CustomScrollView(
-      slivers: [_CustomAppBar(), SliverList(
-        delegate: SliverChildListDelegate(
-          [
-            _PosterAndTitle()
-          ]
-        ),
-      )],
+      slivers: [
+        _CustomAppBar(),
+        SliverList(
+          delegate: SliverChildListDelegate(
+              [_PosterAndTitle(), _OverView(),_OverView(),_OverView(),_OverView(),_OverView(), CastingCard()]),
+        )
+      ],
     ));
+  }
+}
+
+class _OverView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      child: Text(
+        "lorem ipsum dolor sit amet, consectetur adipis ",
+        style: Theme.of(context).textTheme.subtitle1,
+      ),
+    );
   }
 }
 
@@ -36,7 +50,9 @@ class _CustomAppBar extends StatelessWidget {
             color: Colors.black12,
             width: double.infinity,
             alignment: Alignment.bottomCenter,
-            child: Text("Hola mundo")),
+            child: Text("Hola mundo"),
+            padding: EdgeInsets.only(bottom: 20),
+        ),
         background: FadeInImage(
           placeholder: AssetImage("assets/loading.gif"),
           image: NetworkImage("https://via.placeholder.com/500x300"),
@@ -68,13 +84,20 @@ class _PosterAndTitle extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('movie.title', style: textTheme.headline5, overflow: TextOverflow.ellipsis, maxLines: 2),
-              Text('movie.originalTitle', style: textTheme.headline5, overflow: TextOverflow.ellipsis, maxLines: 2),
-              Row(children: [
-                Icon(Icons.star_outline, size: 15, color: Colors.grey),
-                SizedBox(width: 5),
-                Text('movie.voteAverage', style: textTheme.caption),
-              ],
+              Text('movie.title',
+                  style: textTheme.headline5,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2),
+              Text('movie.originalTitle',
+                  style: textTheme.headline5,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2),
+              Row(
+                children: [
+                  Icon(Icons.star_outline, size: 15, color: Colors.grey),
+                  SizedBox(width: 5),
+                  Text('movie.voteAverage', style: textTheme.caption),
+                ],
               )
             ],
           )

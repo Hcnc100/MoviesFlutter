@@ -1,30 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/models/response_now_player/results.dart';
 import 'package:movies/routes/app_routers.dart';
 
 class MovieSlider extends StatelessWidget {
-  const MovieSlider({Key? key}) : super(key: key);
+  final List<Movie> listMovies;
+  String? nameScroll;
+
+  MovieSlider({Key? key, required this.listMovies}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 250,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              "Peliculas Populares",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          // ? if no have name, no show title
+          if (nameScroll != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                nameScroll!,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 20,
-              itemBuilder: (context, index) => const _MoviePoster(),
+              itemCount: listMovies.length,
+              itemBuilder: (context, index) => _MoviePoster(
+                movie: listMovies[index],
+              ),
             ),
           )
         ],
@@ -34,8 +43,11 @@ class MovieSlider extends StatelessWidget {
 }
 
 class _MoviePoster extends StatelessWidget {
+  final Movie movie;
+
   const _MoviePoster({
     Key? key,
+    required this.movie,
   }) : super(key: key);
 
   @override
@@ -54,12 +66,12 @@ class _MoviePoster extends StatelessWidget {
                   width: 130,
                   height: 170,
                   fit: BoxFit.cover,
-                  placeholder: AssetImage("assets/no-image.jpg"),
-                  image: NetworkImage("https://via.placeholder.com/300x400")),
+                  placeholder: const AssetImage("assets/no-image.jpg"),
+                  image: NetworkImage(movie.fillPosterImg)),
             ),
           ),
           Text(
-            "Hoal sdrgseg dfthrhehesartertsrtsrttrrsrtysrtyryrttyertyery",
+            movie.title ?? "No title",
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             textAlign: TextAlign.center,

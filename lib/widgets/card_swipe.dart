@@ -1,32 +1,47 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:movies/models/response_now_player/results.dart';
 import 'package:movies/routes/app_routers.dart';
 
 class CardSwipe extends StatelessWidget {
-  const CardSwipe({Key? key}) : super(key: key);
+  final List<Movie> movies;
+
+  const CardSwipe({Key? key, required this.movies}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Container(
-      width: double.infinity, // ! ocupqra todo el ancho del padre
+
+    if (movies.isEmpty) {
+      // ? show only when the movies is zero
+      return SizedBox(
+        width: double.infinity, // * fill max width
+        height: size.height * 0.5, // * 50% of the screen
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: double.infinity,
       height: size.height * 0.5,
       child: Swiper(
-        itemCount: 10,
+        itemCount: movies.length,
         layout: SwiperLayout.STACK,
         itemWidth: size.width * 0.6,
         itemHeight: size.height * 0.4,
         itemBuilder: (_, index) {
+          final movie = movies[index];
           return GestureDetector(
             onTap: () => Navigator.pushNamed(context, AppRouters.detailsScreen),
             child: ClipRRect(
-              // * agragamos bordes circulares
-              borderRadius: BorderRadius.circular(20), // * con un radio de 20
-              child: const FadeInImage(
-                placeholder: AssetImage("assets/no-image.jpg"),
-                image: NetworkImage("https://via.placeholder.com/300x400"),
-                fit: BoxFit
-                    .cover, // ! esto es para que la imagen se adapter a los bordes
+              // * add circular border
+              borderRadius: BorderRadius.circular(20),
+              child: FadeInImage(
+                placeholder: const AssetImage("assets/no-image.jpg"),
+                image: NetworkImage(movie.fillPosterImg),
+                fit: BoxFit.cover, // * adapter img to border
               ),
             ),
           );

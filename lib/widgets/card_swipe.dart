@@ -31,18 +31,18 @@ class CardSwipe extends StatelessWidget {
         layout: SwiperLayout.STACK,
         itemWidth: size.width * 0.6,
         itemHeight: size.height * 0.4,
+        onTap: (index) {
+          Navigator.pushNamed(context, AppRouters.detailsScreen);
+        },
         itemBuilder: (_, index) {
           final movie = movies[index];
-          return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, AppRouters.detailsScreen),
-            child: ClipRRect(
-              // * add circular border
-              borderRadius: BorderRadius.circular(20),
-              child: FadeInImage(
-                placeholder: const AssetImage("assets/no-image.jpg"),
-                image: NetworkImage(movie.fillPosterImg),
-                fit: BoxFit.cover, // * adapter img to border
-              ),
+          return ClipRRect(
+            // * add circular border
+            borderRadius: BorderRadius.circular(20),
+            child: FadeInImage(
+              placeholder: const AssetImage("assets/no-image.jpg"),
+              image: NetworkImage(movie.fillPosterImg),
+              fit: BoxFit.cover, // * adapter img to border
             ),
           );
         },

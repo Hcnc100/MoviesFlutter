@@ -13,14 +13,20 @@ class DetailsScreen extends StatelessWidget {
         body: CustomScrollView(
       slivers: [
         _CustomAppBar(
-          movie: movie,
+          titleMovie: movie.title!,
+          urlBackground: movie.fullBackgroundImg,
         ),
         SliverList(
           delegate: SliverChildListDelegate([
             _PosterAndTitle(
-              movie: movie,
+              titleMovie: movie.title!,
+              originalTitle: movie.originalTitle!,
+              urlPosterImg: movie.fullPosterImg,
+              voteAverage: movie.voteAverage!,
             ),
-            _OverView(),
+            _OverView(
+              description: movie.overview!,
+            ),
             CastingCard()
           ]),
         )
@@ -30,12 +36,16 @@ class DetailsScreen extends StatelessWidget {
 }
 
 class _OverView extends StatelessWidget {
+  final String description;
+
+  const _OverView({Key? key, required this.description}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       child: Text(
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ullamcorper ipsum in justo posuere viverra. Fusce sodales ante lorem, non ultrices ante vulputate a. Duis in nisl erat. Praesent eu tincidunt velit. Proin in diam pharetra ligula congue eleifend ut quis tortor. Fusce rutrum leo mauris. Nulla ornare pretium tellus.\nPellentesque at velit in ligula hendrerit lobortis. Vestibulum hendrerit leo at mauris fermentum, vel viverra turpis convallis. Quisque non ante a odio blandit mollis. Aliquam erat volutpat. Donec congue ligula id maximus eleifend. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent sodales purus quis euismod blandit. Vestibulum lobortis eros mi, sed tempor justo euismod vitae. Donec sollicitudin metus eu nibh ultricies euismod. Donec venenatis tristique lorem sit amet tempus. Duis rhoncus, nunc ac accumsan fringilla, nisi dolor mattis justo, nec molestie arcu velit eget lectus. Proin eleifend, ex non malesuada maximus, neque leo imperdiet eros, eu posuere ex lorem et erat. Proin nec diam eu leo ornare tempus. Etiam a velit id sem fermentum aliquam nec in massa. Donec cursus massa magna, eget congue est porta et. Suspendisse vel facilisis risus, vel dapibus dolor.\nIn vitae neque eget purus porttitor iaculis. Sed nisi neque, aliquet et massa at, efficitur feugiat neque. Proin egestas vulputate posuere. Nullam fringilla molestie justo, eu malesuada metus molestie vitae. Phasellus felis diam, venenatis pellentesque congue ac, efficitur sed ex. Morbi sodales bibendum leo. Donec vehicula erat non porttitor tincidunt.",
+        description,
         style: Theme.of(context).textTheme.subtitle1,
       ),
     );
@@ -43,9 +53,14 @@ class _OverView extends StatelessWidget {
 }
 
 class _CustomAppBar extends StatelessWidget {
-  final Movie movie;
+  final String urlBackground;
+  final String titleMovie;
 
-  const _CustomAppBar({Key? key, required this.movie}) : super(key: key);
+  const _CustomAppBar({
+    Key? key,
+    required this.urlBackground,
+    required this.titleMovie,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +76,15 @@ class _CustomAppBar extends StatelessWidget {
           color: Colors.black12,
           width: double.infinity,
           alignment: Alignment.bottomCenter,
-          child: Text(movie.title!,textAlign: TextAlign.center,),
-          padding: const EdgeInsets.only(bottom: 20,left: 10,right: 10),
+          child: Text(
+            titleMovie,
+            textAlign: TextAlign.center,
+          ),
+          padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
         ),
         background: FadeInImage(
           placeholder: const AssetImage("assets/loading.gif"),
-          image: NetworkImage(movie.fullBackgroundImg),
+          image: NetworkImage(urlBackground),
           fit: BoxFit.cover,
         ),
       ),
@@ -75,9 +93,18 @@ class _CustomAppBar extends StatelessWidget {
 }
 
 class _PosterAndTitle extends StatelessWidget {
-  final Movie movie;
+  final String titleMovie;
+  final String urlPosterImg;
+  final String originalTitle;
+  final String voteAverage;
 
-  const _PosterAndTitle({Key? key, required this.movie}) : super(key: key);
+  const _PosterAndTitle({
+    Key? key,
+    required this.titleMovie,
+    required this.urlPosterImg,
+    required this.originalTitle,
+    required this.voteAverage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +118,7 @@ class _PosterAndTitle extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: FadeInImage(
               placeholder: const AssetImage("assets/no-image.jpg"),
-              image: NetworkImage(movie.fullPosterImg),
+              image: NetworkImage(urlPosterImg),
               height: 150,
             ),
           ),
@@ -100,19 +127,20 @@ class _PosterAndTitle extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(movie.title!,
+                Text(titleMovie,
                     style: textTheme.headline5,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2),
-                Text(movie.originalTitle!,
+                Text(originalTitle,
                     style: textTheme.subtitle1,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2),
                 Row(
                   children: [
-                    const Icon(Icons.star_outline, size: 15, color: Colors.grey),
+                    const Icon(Icons.star_outline,
+                        size: 15, color: Colors.grey),
                     const SizedBox(width: 5),
-                    Text('movie.voteAverage', style: textTheme.caption),
+                    Text(voteAverage, style: textTheme.caption),
                   ],
                 )
               ],

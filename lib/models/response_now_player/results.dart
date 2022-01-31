@@ -33,13 +33,18 @@ class Movie {
     this.releaseDate,
     this.title,
     this.video,
-    // this.voteAverage,
+    this.voteAverage,
     this.voteCount,
   });
 
-  get fillPosterImg {
+  get fullPosterImg {
     return posterPath != null ?
     "https://image.tmdb.org/t/p/w500$posterPath" : "https://picsum.photos/200/300";
+  }
+
+  get fullBackgroundImg {
+    return backdropPath != null ?
+    "https://image.tmdb.org/t/p/w500$backdropPath" : "https://picsum.photos/200/300";
   }
 
   Movie.fromJson(dynamic json) {
@@ -55,7 +60,7 @@ class Movie {
     releaseDate = json['release_date'];
     title = json['title'];
     video = json['video'];
-    // voteAverage = json['vote_average'];
+    voteAverage = json['vote_average'].toString();
     voteCount = json['vote_count'];
   }
 
@@ -71,7 +76,7 @@ class Movie {
   String? releaseDate;
   String? title;
   bool? video;
-  // double? voteAverage;
+  String? voteAverage;
   int? voteCount;
 
   Map<String, dynamic> toJson() {
@@ -88,7 +93,7 @@ class Movie {
     map['release_date'] = releaseDate;
     map['title'] = title;
     map['video'] = video;
-    // map['vote_average'] = voteAverage;
+    map['vote_average'] = voteAverage;
     map['vote_count'] = voteCount;
     return map;
   }

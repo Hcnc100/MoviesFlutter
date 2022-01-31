@@ -95,7 +95,7 @@ class _MoviePoster extends StatelessWidget {
                   height: 170,
                   fit: BoxFit.cover,
                   placeholder: const AssetImage("assets/no-image.jpg"),
-                  image: NetworkImage(movie.fillPosterImg)),
+                  image: NetworkImage(movie.fullPosterImg)),
             ),
           ),
           Text(

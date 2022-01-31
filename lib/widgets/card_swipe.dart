@@ -32,16 +32,15 @@ class CardSwipe extends StatelessWidget {
         itemWidth: size.width * 0.6,
         itemHeight: size.height * 0.4,
         onTap: (index) {
-          Navigator.pushNamed(context, AppRouters.detailsScreen);
+          Navigator.pushNamed(context, AppRouters.detailsScreen,arguments: movies[index]);
         },
         itemBuilder: (_, index) {
-          final movie = movies[index];
           return ClipRRect(
             // * add circular border
             borderRadius: BorderRadius.circular(20),
             child: FadeInImage(
               placeholder: const AssetImage("assets/no-image.jpg"),
-              image: NetworkImage(movie.fillPosterImg),
+              image: NetworkImage(movies[index].fullPosterImg),
               fit: BoxFit.cover, // * adapter img to border
             ),
           );

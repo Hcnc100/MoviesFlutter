@@ -5,6 +5,7 @@ import 'package:movies/models/response_cast/response_cast.dart';
 import 'package:movies/models/response_now_player/movie_response.dart';
 import 'package:movies/models/response_now_player/results.dart';
 import 'package:movies/models/response_popular/response_popular.dart';
+import 'package:movies/models/response_search/response_search.dart';
 import 'package:movies/providers/keys.dart';
 
 class MoviesProvider extends ChangeNotifier {
@@ -31,7 +32,6 @@ class MoviesProvider extends ChangeNotifier {
   }
 
   Future<List<Cast>> getCastOfMovie(int idMovie) async {
-
     if (movieCast.containsKey(idMovie)) return movieCast[idMovie]!;
 
     final jsonData = await _getJsonData("3/movie/$idMovie/credits");
@@ -54,5 +54,17 @@ class MoviesProvider extends ChangeNotifier {
     // ! this, destructure the list
     listPopularMovies = [...listPopularMovies, ...popularResponse];
     notifyListeners();
+  }
+
+  Future<List<Movie>> getListMovieSearch(String query) async {
+    var url = Uri.https(_baseUrl, "3/search/movie", {
+      "api_key": _apiKey,
+      "language": _language,
+      "page": "1",
+      "query": query
+    });
+    final jsonData = await http.get(url);
+    listMovies = responseSearchFromJson(jsonData.body).results ?? [];
+    return listMovies;
   }
 }

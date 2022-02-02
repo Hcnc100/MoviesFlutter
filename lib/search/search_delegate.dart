@@ -3,10 +3,12 @@ import 'package:movies/models/response_now_player/results.dart';
 import 'package:movies/providers/movie_provider.dart';
 import 'package:movies/routes/app_routers.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class MovieDelegate extends SearchDelegate {
   @override
   String? get searchFieldLabel => "Buscar Pelicula";
+  List<Movie> listResult = [];
 
   @override
   List<Widget>? buildActions(BuildContext context) {
@@ -26,7 +28,7 @@ class MovieDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Text("Hola");
+    return _showResultQuery();
   }
 
   @override
@@ -41,26 +43,75 @@ class MovieDelegate extends SearchDelegate {
         ),
       );
     } else {
-      return FutureBuilder(
+      movieProvider.getSuggestionsByQuery(query);
+      return StreamBuilder(
+          stream: movieProvider.suggestionsStream,
           builder: (context, AsyncSnapshot<List<Movie>> snapshot) {
-            if (snapshot.hasData) {
-              final movies = snapshot.data!;
-              return ListView.builder(
-                itemCount: movies.length,
-                itemBuilder: (context, index) {
-                  return _MovieItem(
-                    movie: movies[index],
-                  );
-                },
-              );
-            } else {
-              return const Center(
-                child: Text("Sin datos"),
-              );
+            if (listResult.isNotEmpty &&
+                snapshot.connectionState == ConnectionState.waiting) {
+              return _showResultQuery();
             }
-          },
-          future: movieProvider.getListMovieSearch(query));
+            return getWidgetFromData(snapshot);
+          });
     }
+  }
+
+  Widget getWidgetFromData(AsyncSnapshot<List<Movie>> snapshot) {
+    listResult.clear();
+    if (snapshot.hasData) {
+      final movies = snapshot.data!;
+      if (movies.isEmpty) {
+        return const Center(child: Text("Sin datos"));
+      } else {
+        listResult.addAll(movies);
+        return _showResultQuery();
+      }
+    } else if (snapshot.hasError) {
+      return const Center(child: Text("Tenemos un error"));
+    } else {
+      return _MovieSheemer();
+    }
+  }
+
+  ListView _showResultQuery() {
+    return ListView.builder(
+        itemCount: listResult.length,
+        itemBuilder: (context, index) => _MovieItem(movie: listResult[index]));
+  }
+}
+
+class _MovieSheemer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade500,
+      highlightColor: Colors.grey.shade100,
+      child: ListView.builder(
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return Padding(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: 48.0,
+                        height: 48.0,
+                        color: Colors.white,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 16.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ]),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4));
+          }),
+    );
   }
 }
 
@@ -74,15 +125,18 @@ class _MovieItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    movie.heroId="search/${movie.id}";
-    return Hero(
-      tag: movie.heroId!,
+    movie.heroId = "search/${movie.id}";
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 5),
       child: ListTile(
-        leading: FadeInImage(
-            placeholder: const AssetImage("assets/no-image.jpg"),
-            image: NetworkImage(movie.fullPosterImg),
-            width: 50,
-            fit: BoxFit.cover),
+        leading: Hero(
+          tag: movie.heroId!,
+          child: FadeInImage(
+              placeholder: const AssetImage("assets/no-image.jpg"),
+              image: NetworkImage(movie.fullPosterImg),
+              width: 50,
+              fit: BoxFit.cover),
+        ),
         title: Text(movie.originalTitle!),
         onTap: () {
           Navigator.pushNamed(context, AppRouters.detailsScreen,

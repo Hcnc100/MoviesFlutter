@@ -35,13 +35,18 @@ class CardSwipe extends StatelessWidget {
           Navigator.pushNamed(context, AppRouters.detailsScreen,arguments: movies[index]);
         },
         itemBuilder: (_, index) {
-          return ClipRRect(
-            // * add circular border
-            borderRadius: BorderRadius.circular(20),
-            child: FadeInImage(
-              placeholder: const AssetImage("assets/no-image.jpg"),
-              image: NetworkImage(movies[index].fullPosterImg),
-              fit: BoxFit.cover, // * adapter img to border
+          final movie=movies[index];
+          movie.heroId="swipe/${movie.id}";
+          return Hero(
+            tag: movie.heroId!,
+            child: ClipRRect(
+              // * add circular border
+              borderRadius: BorderRadius.circular(20),
+              child: FadeInImage(
+                placeholder: const AssetImage("assets/no-image.jpg"),
+                image: NetworkImage(movie.fullPosterImg),
+                fit: BoxFit.cover, // * adapter img to border
+              ),
             ),
           );
         },

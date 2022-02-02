@@ -79,6 +79,8 @@ class Movie {
   String? voteAverage;
   int? voteCount;
 
+  String? heroId;
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['adult'] = adult;

@@ -23,6 +23,7 @@ class DetailsScreen extends StatelessWidget {
               originalTitle: movie.originalTitle!,
               urlPosterImg: movie.fullPosterImg,
               voteAverage: movie.voteAverage!,
+              heroId: movie.heroId!,
             ),
             _OverView(
               description: movie.overview!,
@@ -97,6 +98,7 @@ class _PosterAndTitle extends StatelessWidget {
   final String urlPosterImg;
   final String originalTitle;
   final String voteAverage;
+  final String heroId;
 
   const _PosterAndTitle({
     Key? key,
@@ -104,6 +106,7 @@ class _PosterAndTitle extends StatelessWidget {
     required this.urlPosterImg,
     required this.originalTitle,
     required this.voteAverage,
+    required this.heroId,
   }) : super(key: key);
 
   @override
@@ -114,12 +117,15 @@ class _PosterAndTitle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: FadeInImage(
-              placeholder: const AssetImage("assets/no-image.jpg"),
-              image: NetworkImage(urlPosterImg),
-              height: 150,
+          Hero(
+            tag:heroId ,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: FadeInImage(
+                placeholder: const AssetImage("assets/no-image.jpg"),
+                image: NetworkImage(urlPosterImg),
+                height: 150,
+              ),
             ),
           ),
           const SizedBox(width: 20),

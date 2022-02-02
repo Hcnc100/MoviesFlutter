@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:movies/models/response_cast/cast.dart';
+import 'package:movies/models/response_cast/response_cast.dart';
 import 'package:movies/models/response_now_player/movie_response.dart';
 import 'package:movies/models/response_now_player/results.dart';
 import 'package:movies/models/response_popular/response_popular.dart';
@@ -13,6 +15,7 @@ class MoviesProvider extends ChangeNotifier {
   List<Movie> listMovies = [];
   List<Movie> listPopularMovies = [];
   int _popularPage = 0;
+  Map<int, List<Cast>> movieCast = {};
 
   MoviesProvider() {
     getOnDisplayMovies();
@@ -27,10 +30,19 @@ class MoviesProvider extends ChangeNotifier {
     return response.body;
   }
 
+  Future<List<Cast>> getCastOfMovie(int idMovie) async {
+
+    if (movieCast.containsKey(idMovie)) return movieCast[idMovie]!;
+
+    final jsonData = await _getJsonData("3/movie/$idMovie/credits");
+    final listCast = responseCastFromJson(jsonData).cast ?? [];
+    movieCast[idMovie] = listCast;
+    return listCast;
+  }
+
   getOnDisplayMovies() async {
     final jsonData = await _getJsonData("3/movie/now_playing");
     listMovies = movieResponseFromJson(jsonData).results ?? [];
-    print("Hola");
     notifyListeners();
   }
 
